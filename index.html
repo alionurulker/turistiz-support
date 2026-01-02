@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Request - Turistiz</title>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     * {
       margin: 0;
@@ -85,6 +86,12 @@
       background: white;
     }
 
+    .captcha-container {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: center;
+    }
+
     .submit-btn {
       width: 100%;
       padding: 14px;
@@ -134,8 +141,21 @@
       border: 1px solid #f5c6cb;
     }
 
+    .message.warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeeba;
+    }
+
     .required {
       color: #e74c3c;
+    }
+
+    @media (max-width: 500px) {
+      .captcha-container {
+        transform: scale(0.85);
+        transform-origin: center;
+      }
     }
   </style>
 </head>
@@ -198,6 +218,10 @@
         ></textarea>
       </div>
 
+      <div class="captcha-container">
+        <div class="g-recaptcha" data-sitekey="${RECAPTCHA_SITE_KEY}"></div>
+      </div>
+
       <button type="submit" class="submit-btn" id="submitBtn">
         Submit Support Request
       </button>
@@ -225,6 +249,15 @@
       const submitBtn = document.getElementById('submitBtn');
       const messageDiv = document.getElementById('messageDiv');
       
+      // Check reCAPTCHA
+      const recaptchaResponse = grecaptcha.getResponse();
+      if (!recaptchaResponse) {
+        messageDiv.className = 'message warning';
+        messageDiv.textContent = 'Please complete the reCAPTCHA verification.';
+        messageDiv.style.display = 'block';
+        return;
+      }
+      
       // Get form data
       const purchaseCode = document.getElementById('purchaseCode').value;
       const email = document.getElementById('email').value;
@@ -241,7 +274,8 @@
         purchase_code: purchaseCode,
         from_email: email,
         subject: subject,
-        message: message
+        message: message,
+        'g-recaptcha-response': recaptchaResponse
       };
 
       // Send email using EmailJS with environment variables
@@ -259,8 +293,9 @@
           messageDiv.textContent = 'Your support request has been submitted successfully! We will get back to you shortly.';
           messageDiv.style.display = 'block';
           
-          // Reset form
+          // Reset form and reCAPTCHA
           document.getElementById('supportForm').reset();
+          grecaptcha.reset();
           
           // Re-enable button
           submitBtn.disabled = false;
@@ -273,6 +308,9 @@
           messageDiv.className = 'message error';
           messageDiv.textContent = 'Failed to submit support request. Please try again.';
           messageDiv.style.display = 'block';
+          
+          // Reset reCAPTCHA
+          grecaptcha.reset();
           
           // Re-enable button
           submitBtn.disabled = false;
