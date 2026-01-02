@@ -218,9 +218,9 @@
         ></textarea>
       </div>
 
-      <div class="captcha-container">
+      <!-- <div class="captcha-container">
         <div class="g-recaptcha" data-sitekey="${RECAPTCHA_SITE_KEY}"></div>
-      </div>
+      </div> -->
 
       <button type="submit" class="submit-btn" id="submitBtn">
         Submit Support Request
@@ -250,13 +250,13 @@
       const messageDiv = document.getElementById('messageDiv');
       
       // Check reCAPTCHA
-      const recaptchaResponse = grecaptcha.getResponse();
-      if (!recaptchaResponse) {
-        messageDiv.className = 'message warning';
-        messageDiv.textContent = 'Please complete the reCAPTCHA verification.';
-        messageDiv.style.display = 'block';
-        return;
-      }
+      // const recaptchaResponse = grecaptcha.getResponse();
+      // if (!recaptchaResponse) {
+      //   messageDiv.className = 'message warning';
+      //   messageDiv.textContent = 'Please complete the reCAPTCHA verification.';
+      //   messageDiv.style.display = 'block';
+      //   return;
+      // }
       
       // Get form data
       const purchaseCode = document.getElementById('purchaseCode').value;
@@ -274,8 +274,8 @@
         purchase_code: purchaseCode,
         from_email: email,
         subject: subject,
-        message: message,
-        'g-recaptcha-response': recaptchaResponse
+        message: message
+        // 'g-recaptcha-response': recaptchaResponse
       };
 
       // Send email using EmailJS with environment variables
