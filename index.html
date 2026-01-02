@@ -245,6 +245,7 @@
       };
 
       // Send email using EmailJS with environment variables
+      console.log('Sending CONFIG.EMAILJS_SERVICE_ID:', CONFIG.EMAILJS_SERVICE_ID);
       emailjs.send(
         CONFIG.EMAILJS_SERVICE_ID,
         CONFIG.EMAILJS_TEMPLATE_ID,
